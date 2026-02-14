@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>小狸日語 V57 - 粗體與極致去廢話版</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Zen+Maru+Gothic:wght@500;700;900&display=swap');
+:root{--primary:#599ddb;--accent:#ff8fab;--yellow:#fde047;--text:#334155;--bg:#fff8e7;--panel-bg:#fff;--border:#e2e8f0;--dark-panel:#1e293b}
+*{box-sizing:border-box}body{margin:0;padding:0;background:var(--bg);font-family:'Zen Maru Gothic','Noto Sans TC',sans-serif;color:var(--text);line-height:1.6;background-image:radial-gradient(#f1e2c5 1px,transparent 1px);background-size:20px 20px}
+
+ruby{font-family:'Zen Maru Gothic',sans-serif;display:inline-flex;flex-direction:column-reverse;align-items:center;vertical-align:bottom}
+rt{font-size:0.55em;color:var(--primary);font-weight:600;line-height:1;margin-bottom:0px;transform:none!important}
+
+.dashboard-header{background:var(--dark-panel);color:#fff;padding:10px 20px;position:sticky;top:0;z-index:2000;box-shadow:0 4px 20px rgba(0,0,0,.15)}
+.header-content{max-width:1600px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
+.brand h1{margin:0;font-size:18px;color:var(--yellow);font-weight:900}.brand .tag{font-size:12px;opacity:.85;font-weight:900;padding-left:8px;color:#fff}
+.top-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.btn{border:0;cursor:pointer;border-radius:8px;padding:6px 12px;font-weight:900;font-size:13px;display:flex;align-items:center;gap:6px;transition:all .15s;user-select:none;border:1px solid rgba(255,255,255,0.1)}
+.btn:hover{transform:translateY(-1px);filter:brightness(1.08)}.btn:active{transform:translateY(1px)}
+.btn.primary{background:var(--yellow);color:#0f172a}.btn.accent{background:var(--accent);color:#fff}.btn.code{background:#475569;color:#fff}.btn.dark{background:rgba(255,255,255,.15);color:#fff}.btn.success{background:#16a34a;color:#fff}.btn.purple{background:#8b5cf6;color:#fff}.btn:disabled{opacity:.6;cursor:not-allowed;transform:none!important}
+.days-wrapper{max-width:1600px;margin:10px auto 0;display:flex;align-items:center;gap:10px;background:rgba(0,0,0,0.2);padding:5px;border-radius:50px;position:relative;z-index:1500}
+.days-container{flex:1;overflow-x:auto;display:flex;gap:6px;padding:4px;scrollbar-width:none;white-space:nowrap}.days-container::-webkit-scrollbar{display:none}
+.day-pill{flex:0 0 auto;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#94a3b8;padding:6px 14px;border-radius:20px;font-size:12px;cursor:pointer;min-width:40px;text-align:center;transition:.2s;display:flex;flex-direction:column;align-items:center;gap:2px}
+.day-pill strong{display:block;font-size:14px;color:#fff;line-height:1}.day-pill.active{background:var(--primary);color:#fff;border-color:var(--primary);transform:scale(1.05);box-shadow:0 0 10px rgba(34,58,112,.5)}.day-pill.done-mark::after{content:'✓';color:#86efac;font-size:10px;margin-top:2px}
+#gridMenuPanel{display:none;background:#1e293b;padding:15px;margin-top:5px;border-top:1px solid rgba(255,255,255,0.1);box-shadow:0 15px 30px rgba(0,0,0,0.5);position:absolute;top:100%;left:0;right:0;z-index:1600;border-radius:12px}
+.grid-menu-content{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px;max-height:400px;overflow-y:auto}
+.grid-item{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);padding:8px;border-radius:8px;cursor:pointer;display:flex;flex-direction:column;height:56px;justify-content:space-between;color:#fff}.grid-item:hover{background:rgba(255,255,255,0.12)}.grid-item.active{border-color:var(--primary);background:rgba(34,58,112,0.2)}.grid-item .d-num{font-size:10px;color:#94a3b8;font-weight:900}.grid-item .d-word{font-size:13px;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;width:100%}
+.main-layout{max-width:1600px;margin:20px auto;padding:0 20px;display:grid;grid-template-columns:300px 380px 1fr 280px;gap:20px;align-items:start;height:calc(100vh - 160px)}
+.col{background:var(--panel-bg);border-radius:14px;border:1px solid var(--border);display:flex;flex-direction:column;height:100%;overflow:hidden;box-shadow:0 6px 18px rgba(0,0,0,.03)}
+.col-head{padding:10px 15px;background:#f8fafc;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}.col-title{font-weight:900;color:#475569;font-size:14px}.col-body{padding:15px;overflow-y:auto;flex:1}
+.field-group{margin-bottom:10px}.field-label{font-size:11px;font-weight:900;color:#64748b;margin-bottom:4px;display:block}
+.input-base{width:100%;padding:8px 10px;border:1px solid #e2e8f0;border-radius:8px;font-size:13px;outline:none;box-sizing:border-box;background:#fff;transition:border-color 0.2s;}.input-base:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(34,58,112,.12)}textarea.input-base{min-height:64px;resize:vertical}
+.slider-group{display:flex;flex-direction:column;gap:8px;margin-top:10px;background:#f1f5f9;padding:10px;border-radius:10px;border:1px solid #e2e8f0}.slider-row{display:flex;align-items:center;gap:8px}.slider-label{font-size:11px;color:#64748b;font-weight:900;width:55px;white-space:nowrap}.slider-val{font-size:11px;color:#599ddb;font-weight:900;width:28px;text-align:right}
+input[type=range]{-webkit-appearance:none;width:100%;height:6px;background:#cbd5e1;border-radius:5px;outline:none;margin:0;flex:1}input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:var(--primary);cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,0.2);border:2px solid #fff;transition:transform 0.1s;}input[type=range]::-webkit-slider-thumb:active{transform:scale(1.2);}
+.tabs{display:flex;gap:5px;margin-bottom:10px;background:#f1f5f9;padding:4px;border-radius:10px}.tab{flex:1;text-align:center;padding:8px;font-size:13px;font-weight:900;color:#64748b;cursor:pointer;border-radius:8px;transition:.15s}.tab.active{background:#fff;color:var(--primary);box-shadow:0 1px 3px rgba(0,0,0,.1)}
+.preview-toggle-group{background:#f1f5f9;padding:4px;border-radius:8px;display:flex;gap:4px;margin-left:10px}.preview-btn{flex:1;border:none;background:transparent;padding:6px 10px;font-size:12px;font-weight:900;color:#64748b;border-radius:6px;cursor:pointer;transition:.2s}.preview-btn.active{background:#fff;color:var(--primary);box-shadow:0 1px 3px rgba(0,0,0,0.1)}.preview-actions{display:flex;align-items:center;gap:8px}
+iframe{width:100%;height:100%;border:0;background:#fff}
+#coverPreviewArea{width:280px;height:164px;background-color:#FFF8E7;border:1px solid #ddd;margin:0 auto;position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:center;align-items:center;border-radius:14px;transition:background 0.3s;}
+#toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(20px);background:#1e293b;color:#fff;padding:10px 18px;border-radius:999px;font-weight:900;opacity:0;visibility:hidden;transition:.25s;z-index:3000;display:flex;align-items:center;gap:10px}#toast.show{opacity:1;visibility:visible;transform:translate(-50%,0)}
+.modal-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:5000;justify-content:center;align-items:center}.modal-overlay.show{display:flex}.modal-box{background:#fff;border-radius:16px;padding:20px;width:90%;max-width:700px;max-height:80vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.3);position:relative}.modal-title{font-size:18px;font-weight:900;margin-bottom:15px;color:#334155}.modal-close{position:absolute;top:15px;right:15px;background:none;border:none;font-size:24px;cursor:pointer;color:#94a3b8}
+.highlight-box{background:linear-gradient(135deg,#fef3c7,#fde68a);border:2px solid #f59e0b;padding:12px;border-radius:12px;margin-bottom:15px}.highlight-box .title{font-size:13px;font-weight:900;color:#92400e;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+@media(max-width:1400px){.main-layout{grid-template-columns:300px 350px 1fr}.col.cover-col{display:none}}@media(max-width:1000px){.main-layout{grid-template-columns:1fr;height:auto}.col{height:640px}}
+</style>
+</head>
+<body>
+<div id="toast"><span>✅ 完成</span></div>
+<div class="modal-overlay" id="importModal"><div class="modal-box"><button class="modal-close" onclick="closeImportModal()">×</button><div class="modal-title">📥 導入外部 AI 生成的內容</div><div class="highlight-box"><div class="title">💡 說明</div><ol style="margin:0;padding-left:20px;font-size:12px;color:#78350f;"><li>點擊「複製批次 Prompt」取得 30 天的生成指令</li><li>貼到 ChatGPT / Claude 等 AI 生成內容</li><li>複製 AI 回傳的 JSON 貼到下方</li><li>點擊「導入」即可填入所有內容</li></ol></div><div class="field-group"><label class="field-label">選擇導入模式</label><select class="input-base" id="importMode"><option value="batch">批次導入（30天全部）</option><option value="single">單日導入</option></select></div><div class="field-group"><label class="field-label">貼上 JSON 內容</label><textarea class="input-base" id="importJsonArea" style="min-height:200px;" placeholder="貼上從 AI 複製的 JSON..."></textarea></div><div style="display:flex;gap:10px;margin-top:15px;"><button class="btn success" onclick="doImport()" style="flex:1;justify-content:center;">✅ 導入</button><button class="btn dark" onclick="closeImportModal()" style="flex:1;justify-content:center;">取消</button></div></div></div>
+
+<div class="dashboard-header"><div class="header-content"><div class="brand"><h1>🦝 小狸日語 V57 <span class="tag">粗體與極致去廢話版</span></h1></div><div class="top-actions"><button class="btn purple" onclick="copyBatchPrompt()">📋 複製批次 Prompt</button><button class="btn success" onclick="openImportModal()">📥 導入 AI 內容</button><div style="width:1px;height:20px;background:rgba(255,255,255,0.2);margin:0 5px;"></div><button class="btn accent" onclick="exportData()">💾 備份資料</button><button class="btn dark" onclick="hardReset()">🧼 強制重置</button><button class="btn primary" onclick="randomizeTheme()">🎲 換圖卡底色</button></div></div><div class="days-wrapper"><div class="days-container" id="daysScroller"></div><button class="btn primary" id="expandMenuBtn" onclick="toggleMenu()" style="border-radius:20px;padding:6px 15px;">📂 展開選單</button><div id="gridMenuPanel"><div class="grid-menu-content" id="gridMenuContent"></div></div></div></div>
+
+<section class="main-layout">
+<div class="col"><div class="col-head"><div class="col-title">🔧 1. 設定與課表</div></div><div class="col-body"><div class="highlight-box"><div class="title">💰 導入模式</div><p style="margin:0;font-size:11px;color:#78350f;line-height:1.6;">請使用「複製批次 Prompt」→ 貼到外部 AI → 再用「導入 AI 內容」貼回來。</p></div><div style="background:#f0fdf4;border:1px dashed #86efac;padding:10px;border-radius:12px;margin-bottom:15px;"><span style="font-size:11px;font-weight:900;color:#16a34a;display:block;margin-bottom:6px;">導入課表</span><textarea class="input-base" id="jsonInput" placeholder='[{"day":1,"word":"一石二鳥","meaning":"一舉兩得","type":"四字熟語"},...]' style="height:70px;"></textarea><button class="btn dark" style="width:100%;justify-content:center;margin-top:6px;" onclick="importSchedule()">📥 導入課表</button></div><hr style="border:0;border-top:1px solid #e2e8f0;margin:15px 0;"><div class="field-group"><label class="field-label">📌 Day</label><input class="input-base" id="fDay" disabled style="background:#f1f5f9;"></div><div class="field-group"><label class="field-label" style="color:#599ddb;">🔑 關鍵字</label><input class="input-base" id="fWord" placeholder="請輸入單字..."></div><div class="field-group"><label class="field-label">💡 意思</label><input class="input-base" id="fMeaning" placeholder="意思（可空）"></div><div class="field-group"><label class="field-label">🏷️ 類型</label><select class="input-base" id="fType"><option value="慣用句">慣用句</option><option value="四字熟語">四字熟語</option><option value="N1文法">N1文法</option><option value="N2文法">N2文法</option><option value="N3文法">N3文法</option><option value="N4文法">N4文法</option><option value="N5文法">N5文法</option><option value="單字">單字</option><option value="流行語">流行語</option><option value="擬聲擬態語">擬聲擬態語</option><option value="諺語">諺語</option></select></div><button class="btn code" onclick="copySingleDayPrompt()" style="width:100%;margin-bottom:10px;justify-content:center;">📋 複製本日 Prompt</button><button class="btn code" onclick="copyDayJson()" style="width:100%;justify-content:center;">📋 複製本課 JSON</button></div></div>
+
+<div class="col"><div class="col-head"><div class="col-title">✍️ 2. 文案微調</div></div><div class="col-body"><div class="tabs"><div class="tab active" id="tabBtnSeo" onclick="switchTab('seo')">SEO 文章</div><div class="tab" id="tabBtnCards" onclick="switchTab('cards')">IG 圖卡</div></div><div id="tab-seo"><div class="field-group"><label class="field-label">H1 標題</label><input class="input-base" id="seoTitle"></div><div class="field-group"><label class="field-label">前言</label><textarea class="input-base" id="seoIntro" style="min-height:90px;"></textarea></div><div class="field-group"><label class="field-label">意思/情境</label><textarea class="input-base" id="seoMeaning" style="min-height:90px;"></textarea></div><div class="field-group"><label class="field-label">例句</label><textarea class="input-base" id="seoExamples" style="min-height:90px;"></textarea></div><div class="field-group"><label class="field-label">結尾/延伸</label><textarea class="input-base" id="seoRelated" style="min-height:90px;"></textarea></div></div><div id="tab-cards" style="display:none;"><p style="font-size:11px;color:#64748b;background:#f1f5f9;padding:8px;border-radius:5px;margin-bottom:10px;">💡 包含「第一頁封面」與後續三張，可用滑桿微調中文位置。</p><div id="cardsContainer"></div></div></div></div>
+
+<div class="col"><div class="col-head"><div class="col-title">📱 3. 預覽與下載</div><div class="preview-actions"><button class="btn success" style="padding:6px 12px;font-size:12px;" onclick="triggerIgDownload()">📥 下載四張</button><div class="preview-toggle-group"><button class="preview-btn" id="viewModeIg" onclick="setPreviewMode('ig')">IG</button><button class="preview-btn active" id="viewModeWeb" onclick="setPreviewMode('web')">官網</button></div><button class="btn code" style="padding:4px 8px;font-size:11px;" id="copyWebHtmlBtn" onclick="copyWebHTMLFromPreview()" disabled>📋 HTML</button></div></div><div class="col-body" style="padding:0;overflow:hidden;"><iframe id="previewFrame" title="preview"></iframe></div></div>
+
+<div class="col cover-col"><div class="col-head"><div class="col-title">🖼️ 4. 官網 Cover</div></div><div class="col-body" style="display:flex;flex-direction:column;align-items:center;"><div id="coverPreviewArea"><div style="font-family:'Zen Maru Gothic';font-weight:900;font-size:28px;color:#4A4A4A;text-align:center;z-index:2;padding:0 10px; width: 100%; word-break: break-word;"><span id="coverWord">關鍵字</span></div><div style="position:absolute;bottom:10px;left:0;right:0;z-index:2;display:flex;justify-content:center;"><svg viewBox="0 0 140 40" fill="none" style="height:28px;width:auto;"><text x="50%" y="30" text-anchor="middle" font-family="'Zen Maru Gothic', sans-serif" font-weight="900" font-size="28" fill="#4A4A4A">小狸日語</text></svg></div></div><p style="font-size:11px;color:#64748b;margin-top:10px;">尺寸: 280x164px</p><button class="btn primary" onclick="dlCover()" style="margin-top:10px;">⬇️ 下載 Cover</button></div></div>
+</section>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+var TOTAL_DAYS=30,STORAGE_KEY="kotanuki_v57_save";
+var LOGO_HTML='<div style="font-size:4.5cqi; font-weight:900; color:#888; letter-spacing:0.1em; text-align:center; opacity:0.8;">小狸日語</div>';
+
+var FA_ICONS = ["fa-star","fa-gem","fa-leaf","fa-book","fa-crown","fa-rocket","fa-lightbulb","fa-bolt","fa-paper-plane","fa-seedling","fa-sun","fa-clover","fa-shapes","fa-cube","fa-compass","fa-fire","fa-heart","fa-moon","fa-puzzle-piece","fa-key"];
+
+var SVGS = {
+  asanoha: `<svg width="40" height="69.282" viewBox="0 0 40 69.282" xmlns="http://www.w3.org/2000/svg"><g opacity="0.15" stroke="_COLOR_" stroke-width="1.5" fill="none"><path d="M20 0 L40 11.547 L40 34.641 L20 46.188 L0 34.641 L0 11.547 Z"/><path d="M20 0 L20 46.188 M0 11.547 L40 34.641 M0 34.641 L40 11.547 M20 23.094 L40 11.547 M20 23.094 L40 34.641 M20 23.094 L0 11.547 M20 23.094 L0 34.641"/><path d="M20 46.188 L40 57.735 L40 80.829 L20 92.376 L0 80.829 L0 57.735 Z"/><path d="M20 46.188 L20 92.376 M0 57.735 L40 80.829 M0 80.829 L40 57.735 M20 69.282 L40 57.735 M20 69.282 L40 80.829 M20 69.282 L0 57.735 M20 69.282 L0 80.829"/></g></svg>`,
+  yagasuri: `<svg width="20" height="40" viewBox="0 0 20 40" xmlns="http://www.w3.org/2000/svg"><g opacity="0.12" fill="_COLOR_"><path d="M0 10 L10 0 L20 10 L20 20 L10 10 L0 20 Z"/><path d="M0 30 L10 20 L20 30 L20 40 L10 30 L0 40 Z"/></g></svg>`,
+  samekomon: `<svg width="10" height="10" viewBox="0 0 10 10" xmlns="http://www.w3.org/2000/svg"><g opacity="0.15"><circle cx="2.5" cy="2.5" r="2" fill="_COLOR_"/><circle cx="7.5" cy="7.5" r="2" fill="_COLOR_"/></g></svg>`,
+  seigaiha: `<svg width="40" height="20" viewBox="0 0 40 20" xmlns="http://www.w3.org/2000/svg"><g opacity="0.15" fill="none" stroke="_COLOR_" stroke-width="2"><circle cx="20" cy="20" r="14"/><circle cx="20" cy="20" r="7"/><circle cx="0" cy="20" r="14"/><circle cx="0" cy="20" r="7"/><circle cx="40" cy="20" r="14"/><circle cx="40" cy="20" r="7"/></g></svg>`,
+  shippo: `<svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg"><g opacity="0.15" fill="none" stroke="_COLOR_" stroke-width="2"><circle cx="0" cy="0" r="20"/><circle cx="40" cy="0" r="20"/><circle cx="0" cy="40" r="20"/><circle cx="40" cy="40" r="20"/><circle cx="20" cy="20" r="20"/></g></svg>`,
+  kikko: `<svg width="34.64" height="60" viewBox="0 0 34.64 60" xmlns="http://www.w3.org/2000/svg"><g opacity="0.15" fill="none" stroke="_COLOR_" stroke-width="2"><path d="M17.32 0 L34.64 10 L34.64 30 L17.32 40 L0 30 L0 10 Z"/><path d="M17.32 60 L34.64 50 L34.64 30 L17.32 40 L0 30 L0 50 Z"/></g></svg>`,
+  ichimatsu: `<svg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path opacity="0.1" fill="_COLOR_" d="M0 0h10v10H0zm10 10h10v10H10z"/></svg>`,
+  tatewaku: `<svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg"><path opacity="0.15" fill="none" stroke="_COLOR_" stroke-width="2" d="M10 0 C20 10, 20 10, 10 20 C0 30, 0 30, 10 40 M30 0 C40 10, 40 10, 30 20 C20 30, 20 30, 30 40"/></svg>`,
+  karakusa: `<svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg"><path opacity="0.15" fill="none" stroke="_COLOR_" stroke-width="2" d="M0 20 Q10 0 20 20 T40 20 M20 20 Q30 40 40 20 T60 20"/></svg>`,
+  kanoko: `<svg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path opacity="0.12" fill="_COLOR_" d="M10 2a8 8 0 100 16 8 8 0 000-16zm0 12a4 4 0 110-8 4 4 0 010 8z"/></svg>`,
+  hishi: `<svg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path opacity="0.15" fill="none" stroke="_COLOR_" stroke-width="1.5" d="M10 0L20 10L10 20L0 10z"/></svg>`,
+  mameshibori: `<svg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><circle opacity="0.15" cx="10" cy="10" r="4" fill="_COLOR_"/></svg>`
+};
+
+var THEMES = [
+  { name: '桜色 (麻葉紋)', primary: '#eebbcb', accent: '#c08eaf', cardBg: '#fcfaf2', svg: SVGS.asanoha, size: '40px 69.28px' },
+  { name: '紺色 (箭羽紋)', primary: '#223a70', accent: '#89c3eb', cardBg: '#f4f8ff', svg: SVGS.yagasuri, size: '20px 40px' },
+  { name: '若草 (鮫小紋)', primary: '#8ab757', accent: '#e6c35c', cardBg: '#f6fbf2', svg: SVGS.samekomon, size: '15px 15px' },
+  { name: '縹色 (波紋)', primary: '#2792c3', accent: '#f2c299', cardBg: '#f0f7fa', svg: SVGS.seigaiha, size: '40px 20px' },
+  { name: '山吹 (七寶紋)', primary: '#e0861a', accent: '#65a30d', cardBg: '#fffcf7', svg: SVGS.shippo, size: '40px 40px' },
+  { name: '鶯色 (龜甲紋)', primary: '#6e7b43', accent: '#d0af4c', cardBg: '#f7f8f0', svg: SVGS.kikko, size: '34.64px 60px' },
+  { name: '常磐 (方格紋)', primary: '#1b5e3d', accent: '#e57373', cardBg: '#f2f8f5', svg: SVGS.ichimatsu, size: '30px 30px' },
+  { name: '水浅葱 (蒸汽紋)', primary: '#70a19f', accent: '#a855f7', cardBg: '#f2fafa', svg: SVGS.tatewaku, size: '40px 40px' },
+  { name: '萌黄 (蔓藤紋)', primary: '#9ec46a', accent: '#facc15', cardBg: '#f7fcf2', svg: SVGS.karakusa, size: '40px 40px' },
+  { name: '撫子 (鹿仔紋)', primary: '#d7a3b6', accent: '#7fb5e6', cardBg: '#fff9fc', svg: SVGS.kanoko, size: '20px 20px' },
+  { name: '古代紫 (菱形紋)', primary: '#7058a3', accent: '#e0861a', cardBg: '#f9f7fc', svg: SVGS.hishi, size: '30px 30px' },
+  { name: '藤納戸 (豆紋)', primary: '#5a5c9c', accent: '#d7a3b6', cardBg: '#f5f6fc', svg: SVGS.mameshibori, size: '20px 20px' }
+];
+
+var appData={},currentDay=1,previewMode="web",saveTimer,currentEditingCardIdx=0;
+
+window.onload=function(){
+  var baseTemplate=function(d){return{base:{day:d,word:"",meaning:"",type:"慣用句",themeIdx:0,tapeIdx:0},seo:{title:"",intro:"",meaning:"",examples:"",related:""},cards:[]};};
+  for(var i=1;i<=TOTAL_DAYS;i++)appData[i]=baseTemplate(i);
+  var raw=localStorage.getItem(STORAGE_KEY);
+  if(!raw)raw=localStorage.getItem("kotanuki_v56_save");
+  if(!raw)raw=localStorage.getItem("kotanuki_v55_save");
+  if(raw){try{var parsed=JSON.parse(raw);if(parsed&&typeof parsed==="object")appData=parsed;}catch(e){}}
+  for(var i=1;i<=TOTAL_DAYS;i++){if(!appData[i])appData[i]=baseTemplate(i);if(!appData[i].base)appData[i].base=baseTemplate(i).base;if(!appData[i].seo)appData[i].seo=baseTemplate(i).seo;if(!appData[i].cards)appData[i].cards=[];}
+  
+  for(var i=1;i<=TOTAL_DAYS;i++) {
+      if(!appData[i].cards || appData[i].cards.length === 0) {
+          appData[i].cards = [
+              {title: appData[i].base.type || "", main: appData[i].base.word || "", note: appData[i].base.meaning || "", noteX:0, noteY:0},
+              {title: "", main: "", note: "", noteX:0, noteY:0},
+              {title: "", main: "", note: "", noteX:0, noteY:0},
+              {title: "", main: "", note: "", noteX:0, noteY:0}
+          ];
+      }
+  }
+
+  renderScroller();loadDay(1);
+  document.querySelectorAll("input,textarea,select").forEach(function(el){if(["jsonInput"].indexOf(el.id)===-1)el.addEventListener("input",handleInput);});
+  updateCopyWebBtn();
+};
+
+function getSvgUrl(svgString, color) { return `url("data:image/svg+xml,${encodeURIComponent(svgString.replace(/_COLOR_/g, color))}")`; }
+function switchTab(t){document.getElementById("tabBtnSeo").className=t==="seo"?"tab active":"tab";document.getElementById("tabBtnCards").className=t==="cards"?"tab active":"tab";document.getElementById("tab-seo").style.display=t==="seo"?"block":"none";document.getElementById("tab-cards").style.display=t==="cards"?"block":"none";}
+function setPreviewMode(mode){previewMode=mode;document.getElementById("viewModeIg").className=mode==="ig"?"preview-btn active":"preview-btn";document.getElementById("viewModeWeb").className=mode==="web"?"preview-btn active":"preview-btn";updateCopyWebBtn();updatePreviewFrame();}
+function updateCopyWebBtn(){var btn=document.getElementById("copyWebHtmlBtn");if(btn)btn.disabled=(previewMode!=="web");}
+function toggleMenu(){var p=document.getElementById("gridMenuPanel"),b=document.getElementById("expandMenuBtn");var isHidden=(p.style.display==="none"||p.style.display==="");p.style.display=isHidden?"block":"none";b.innerText=isHidden?"📂 收起選單":"📂 展開選單";}
+function showToast(msg){var t=document.getElementById("toast");t.querySelector("span").innerText=msg;t.classList.add("show");setTimeout(function(){t.classList.remove("show");},1800);}
+function saveAppData(){localStorage.setItem(STORAGE_KEY,JSON.stringify(appData));}
+
+function handleInput(e){
+  var id=e.target.id,val=e.target.value,d=appData[currentDay];
+  if(id==="fWord"){d.base.word=val;updateGridItem(currentDay);}
+  else if(id==="fMeaning")d.base.meaning=val;
+  else if(id==="fType")d.base.type=val;
+  else if(id.indexOf("seo")===0){var key=id.replace("seo","").toLowerCase();d.seo[key]=val;}
+  debouncedSaveAndUpdate(false);
+}
+
+function renderScroller(){var s=document.getElementById("daysScroller"),g=document.getElementById("gridMenuContent");s.innerHTML="";g.innerHTML="";for(var i=1;i<=TOTAL_DAYS;i++){var base=appData[i].base||{},done=(appData[i].cards&&appData[i].cards[1]&&appData[i].cards[1].main);var pill=document.createElement("div");pill.className="day-pill"+(i===currentDay?" active":"")+(done?" done-mark":"");pill.innerHTML="<strong>"+i+"</strong><span>"+(base.word||"..")+"</span>";pill.onclick=(function(day){return function(){loadDay(day);};})(i);s.appendChild(pill);var gi=document.createElement("div");gi.className="grid-item"+(i===currentDay?" active":"");gi.id="grid-day-"+i;gi.innerHTML='<span class="d-num">Day '+i+'</span><span class="d-word">'+(base.word||"..")+"</span>";gi.onclick=(function(day){return function(){loadDay(day);document.getElementById("gridMenuPanel").style.display="none";document.getElementById("expandMenuBtn").innerText="📂 展開選單";};})(i);g.appendChild(gi);}}
+function updateGridItem(day){var item=document.getElementById("grid-day-"+day);if(item){var w=appData[day]&&appData[day].base?appData[day].base.word:"..";var node=item.querySelector(".d-word");if(node)node.innerText=w||"..";}}
+
+function loadDay(day){
+  if(saveTimer) { clearTimeout(saveTimer); saveCurrentDayFromUI(); saveAppData(); }
+  currentDay=day;
+  var d=appData[day];
+  document.getElementById("fDay").value=day;
+  document.getElementById("fWord").value=d.base.word||"";
+  document.getElementById("fMeaning").value=d.base.meaning||"";
+  document.getElementById("fType").value=d.base.type||"慣用句";
+  document.getElementById("seoTitle").value=d.seo?d.seo.title||"":"";
+  document.getElementById("seoIntro").value=d.seo?d.seo.intro||"":"";
+  document.getElementById("seoMeaning").value=d.seo?d.seo.meaning||"":"";
+  document.getElementById("seoExamples").value=d.seo?d.seo.examples||"":"";
+  document.getElementById("seoRelated").value=d.seo?d.seo.related||"":"";
+  
+  renderScroller(); 
+  renderCardInputs(d.cards||[]);
+  updateCoverPreview();
+  updatePreviewFrame();
+}
+
+function renderCardInputs(cards){
+  var container=document.getElementById("cardsContainer");container.innerHTML="";
+  
+  [0, 1, 2, 3].forEach(function(idx){
+    var c = cards[idx] || {title:"", main:"", note:"", noteX:0, noteY:0};
+    var div=document.createElement("div");
+    div.className="card-editor"; div.setAttribute("data-card-idx", idx);
+    div.style.cssText="margin-bottom:10px;background:#f8fafc;padding:10px;border:1px solid #e2e8f0;border-radius:12px;transition:border-color 0.3s;";
+    
+    var headTxt = (idx === 0) ? "圖卡 1 (封面)" : "圖卡 " + (idx+1);
+    var pTitle = (idx === 0) ? "標籤 / 分類" : "標題";
+    var pMain = (idx === 0) ? "大標題 (日文漢字)" : "主內容 (含Ruby)";
+    var pNote = (idx === 0) ? "副標說明 (中文)" : "備註說明";
+    var nX = c.noteX || 0; var nY = c.noteY || 0;
+
+    div.innerHTML='<div style="font-size:10px;color:#94a3b8;font-weight:900;">'+headTxt+'</div><input class="input-base c-title" value="'+escapeAttr(c.title||"")+'" placeholder="'+pTitle+'"><input class="input-base c-main" value="'+escapeAttr(c.main||"")+'" placeholder="'+pMain+'" style="margin-top:6px;font-weight:900;"><textarea class="input-base c-note" placeholder="'+pNote+'" style="margin-top:6px;min-height:46px;">'+escapeHtml(c.note||"")+'</textarea>'+
+    '<div class="slider-group"><div class="slider-row"><span class="slider-label">中文↔左右</span><input type="range" class="c-note-x" min="-120" max="120" value="'+nX+'"><span class="slider-val">'+nX+'</span></div><div class="slider-row"><span class="slider-label">中文↕上下</span><input type="range" class="c-note-y" min="-120" max="120" value="'+nY+'"><span class="slider-val">'+nY+'</span></div></div>';
+    
+    container.appendChild(div);
+  });
+  bindCardEvents();
+}
+
+function bindCardEvents(){
+  var container=document.getElementById("cardsContainer");
+  container.querySelectorAll(".c-title,.c-main,.c-note").forEach(function(el){
+    el.addEventListener("focus",function(){
+      var cardDiv=el.closest(".card-editor");
+      currentEditingCardIdx=Number(cardDiv.getAttribute("data-card-idx"));
+      scrollPreviewToCard(currentEditingCardIdx); 
+    });
+    el.addEventListener("input",function(){
+      debouncedSaveAndUpdate(true); 
+    });
+  });
+  
+  container.querySelectorAll(".card-editor").forEach(function(cardDiv){
+    cardDiv.querySelectorAll('input[type="range"]').forEach(function(slider){
+      slider.addEventListener("input",function(){
+        var valSpan=slider.parentElement.querySelector(".slider-val");
+        if(valSpan)valSpan.innerText=slider.value;
+        currentEditingCardIdx=Number(cardDiv.getAttribute("data-card-idx"));
+        
+        var win = document.getElementById("previewFrame").contentWindow;
+        if(win && win.document) {
+            var nX = cardDiv.querySelector(".c-note-x").value;
+            var nY = cardDiv.querySelector(".c-note-y").value;
+            var selector = "#card-" + currentEditingCardIdx + " .note-box, #card-" + currentEditingCardIdx + " .cover-desc";
+            var box = win.document.querySelector(selector);
+            if(box) box.style.transform = "translate(" + nX + "px, " + nY + "px)";
+        }
+        debouncedSaveAndUpdate(true); 
+      });
+    });
+  });
+}
+
+function scrollPreviewToCard(idx){
+  try{
+    var win=document.getElementById("previewFrame").contentWindow;
+    if(win && win.slowScrollTo) {
+      win.slowScrollTo("card-"+idx);
+    }
+  }catch(e){}
+}
+
+function debouncedSaveAndUpdate(skipIframe){
+    clearTimeout(saveTimer);
+    saveTimer=setTimeout(function(){
+        saveCurrentDayFromUI();
+        if(!skipIframe) {
+            updatePreviewFrame();
+        } else {
+            syncTextToIframe();
+        }
+        updateCoverPreview();
+        saveAppData();
+        if(document.activeElement && document.activeElement.id==="fWord") renderScroller();
+    }, 150);
+}
+
+// 🌟 自動淨化器：移除括號與 AI 說明的廢話
+function cleanNote(n) {
+    // 移除所有括號 (無論全形或半形)
+    return String(n||"").replace(/[（）()]/g, "");
+}
+
+function cleanSEOText(str) {
+    if(!str) return "";
+    var s = convertToRuby(str);
+    // 移除任何箭頭 (->, →, ー＞) 後面的整段廢話，直到行尾
+    s = s.replace(/(?:->|→|ー＞).*?(?=\n|$)/g, ""); 
+    s = s.replace(/[（）()]/g, ""); 
+    return s.replace(/\n/g, "<br>");
+}
+
+function syncTextToIframe() {
+    try {
+        var win = document.getElementById("previewFrame").contentWindow;
+        if(!win || !win.document) return;
+        var d = appData[currentDay];
+        for(var i=0; i<=3; i++) {
+            var c = d.cards[i];
+            if(!c) continue;
+            var cDiv = win.document.getElementById("card-"+i);
+            if(!cDiv) continue;
+            
+            if(i===0) {
+                var tag = cDiv.querySelector(".tag-pill");
+                var title = cDiv.querySelector(".cover-title");
+                var desc = cDiv.querySelector(".cover-desc");
+                if(tag) tag.innerHTML = escapeHtml(c.title || d.base.type);
+                if(title) title.innerHTML = convertToRuby(c.main || d.base.word);
+                // 封面副標不含括號
+                if(desc) desc.innerHTML = escapeHtml(cleanNote(c.note || d.base.meaning));
+            } else {
+                var hdr = cDiv.querySelector(".header-title");
+                var txt = cDiv.querySelector(".main-text");
+                var nbox = cDiv.querySelector(".note-box");
+                if(hdr) hdr.innerHTML = escapeHtml(c.title);
+                if(txt) txt.innerHTML = convertToRuby(c.main);
+                // 內頁說明不含括號
+                if(nbox) nbox.innerHTML = nl2br(cleanNote(c.note));
+            }
+        }
+        if(win.autoFitCards) win.autoFitCards(); 
+    } catch(e){}
+}
+
+function saveCurrentDayFromUI(){
+  var container=document.getElementById("cardsContainer");if(!container)return;
+  container.querySelectorAll(".card-editor").forEach(function(div){
+    var idx = Number(div.getAttribute("data-card-idx"));
+    var t=div.querySelector(".c-title")?div.querySelector(".c-title").value:"";
+    var m=div.querySelector(".c-main")?div.querySelector(".c-main").value:"";
+    var n=div.querySelector(".c-note")?div.querySelector(".c-note").value:"";
+    var nX=div.querySelector(".c-note-x")?Number(div.querySelector(".c-note-x").value):0;
+    var nY=div.querySelector(".c-note-y")?Number(div.querySelector(".c-note-y").value):0;
+    
+    if(!appData[currentDay].cards[idx]) appData[currentDay].cards[idx] = {};
+    appData[currentDay].cards[idx].title=t; 
+    appData[currentDay].cards[idx].main=m; 
+    appData[currentDay].cards[idx].note=n;
+    appData[currentDay].cards[idx].noteX=nX;
+    appData[currentDay].cards[idx].noteY=nY;
+  });
+}
+
+function updateCoverPreview(){
+    var d=appData[currentDay], theme=THEMES[d.base.themeIdx||0];
+    document.documentElement.style.setProperty('--primary', theme.primary);
+    document.documentElement.style.setProperty('--accent', theme.accent);
+    
+    var coverText = d.cards[0] ? (d.cards[0].main || d.base.word) : d.base.word;
+    var wEl = document.getElementById("coverWord");
+    if(wEl) wEl.innerHTML = convertToRuby(coverText || "關鍵字");
+    
+    var area=document.getElementById("coverPreviewArea");
+    if(area){area.style.backgroundColor=theme.cardBg; area.style.backgroundImage=getSvgUrl(theme.svg, theme.primary); area.style.backgroundSize=theme.size;}
+}
+
+function randomizeTheme(){
+    var tIdx=Math.floor(Math.random()*THEMES.length);
+    appData[currentDay].base.themeIdx=tIdx;saveAppData();
+    updateCoverPreview();updatePreviewFrame();showToast("🎲 已更換圖卡底色");
+}
+
+function updatePreviewFrame(){
+  var d=appData[currentDay], theme=THEMES[d.base.themeIdx||0];
+  var bodyHtml=generateContentHTML(d,theme,previewMode);
+  
+  var prevScrollY = 0;
+  try { prevScrollY = document.getElementById("previewFrame").contentWindow.scrollY || 0; } catch(e){}
+
+  var doc='<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Zen+Maru+Gothic:wght@500;700;900&display=swap" rel="stylesheet"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"><style>*{box-sizing:border-box}html,body{margin:0;padding:0;font-family:"Zen Maru Gothic","Noto Sans TC",sans-serif;color:#334155;background:#f8fafc}.preview-wrap{padding:16px;max-width:1100px;margin:0 auto}.sticky-hint{position:sticky;top:0;background:rgba(255,255,255,.92);backdrop-filter:blur(6px);padding:8px 10px;border:1px solid #e2e8f0;border-radius:12px;margin-bottom:12px;font-weight:900;font-size:12px;color:#475569;z-index:10}'+generateCardCSS(theme)+'</style></head><body><div class="preview-wrap"><div class="sticky-hint">'+(previewMode==="ig"?"IG 圖卡預覽 (精華四張)":"官網文章預覽")+'</div>'+bodyHtml+'</div><script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"><\/script><script>async function dlCards(){ const cards=document.querySelectorAll(".ig-card"); for(let i=0;i<cards.length;i++){ const card=cards[i]; const origShadow=card.style.boxShadow; const origTrans=card.style.transform; card.style.boxShadow="none"; card.style.transform="none"; try{ const canvas=await html2canvas(card,{scale:3,useCORS:true,backgroundColor:null,logging:false}); const link=document.createElement("a"); link.download="小狸日語_Day' + currentDay + '_卡片"+(i+1)+".jpg"; link.href=canvas.toDataURL("image/jpeg",0.95); link.click(); await new Promise(r=>setTimeout(r,400)); }catch(e){console.error(e);}finally{ card.style.boxShadow=origShadow; card.style.transform=origTrans; } } } document.querySelectorAll(".ig-card").forEach(function(c){c.style.cursor="pointer";c.addEventListener("click",function(){if(window.parent&&window.parent.focusEditorCard){window.parent.focusEditorCard(c.id.replace("card-",""));}});});<\/script><script>window.slowScrollTo=function(id){var el=document.getElementById(id);if(!el)return;var target=el.getBoundingClientRect().top+window.scrollY-(window.innerHeight/2)+(el.offsetHeight/2);var start=window.scrollY;var dist=target-start;var duration=800;var startT=null;function step(t){if(!startT)startT=t;var p=t-startT;var x=p/(duration/2);var y=(x<1)?(dist/2)*x*x+start:(-dist/2)*((x-1)*(x-3)-1)+start;window.scrollTo(0,y);if(p<duration)window.requestAnimationFrame(step);else window.scrollTo(0,target);}window.requestAnimationFrame(step);}; window.scrollTo(0, '+prevScrollY+');<\/script><script>function autoFitCards(){document.querySelectorAll(".ig-card").forEach(function(card){var isCover=card.querySelector(".cover-body")!==null;var textBg=card.querySelector(".text-bg")||card.querySelector(".cover-desc").parentElement;if(!textBg)return;var mainTxt=textBg.querySelector(".main-text")||textBg.querySelector(".cover-title");var noteBox=textBg.querySelector(".note-box")||textBg.querySelector(".cover-desc");var icon=textBg.querySelector(".fa-icon");if(mainTxt)mainTxt.style.fontSize=isCover?"11.5cqi":"7.8cqi";if(noteBox)noteBox.style.fontSize=isCover?"5.5cqi":"4.8cqi";if(icon)icon.style.display="block";var maxH=card.clientHeight*(isCover?0.88:0.78);var maxW=textBg.clientWidth-(isCover?10:20);var loops=0;while((textBg.scrollHeight>maxH||(mainTxt&&mainTxt.scrollWidth>maxW))&&loops<35){if(mainTxt){var fs=parseFloat(window.getComputedStyle(mainTxt).fontSize);if(fs>14)mainTxt.style.fontSize=(fs-1)+"px";}if(noteBox){var nfs=parseFloat(window.getComputedStyle(noteBox).fontSize);if(nfs>12)noteBox.style.fontSize=(nfs-0.5)+"px";}if(icon&&loops>10)icon.style.display="none";loops++;}});}window.addEventListener("resize",autoFitCards);setTimeout(autoFitCards,100);autoFitCards();<\/script></body></html>';
+  document.getElementById("previewFrame").srcdoc=doc;
+}
+function nl2br(str){return(str||"").replace(/\n/g,"<br>");}
+
+function getRandomFaIcon(dayNum, idxOffset) {
+    var pick = (Number(dayNum) * 3 + Number(idxOffset) * 7) % FA_ICONS.length;
+    return FA_ICONS[pick];
+}
+
+function generateCardCSS(theme){
+  return ':root { --primary:'+theme.primary+'; --accent:'+theme.accent+'; --card-bg:'+theme.cardBg+'; --inner-bg:#fdfbf6; --shadow-color:rgba(0,0,0,0.2); --text:#3a3226; --paper-border:#eaddc5; }'+
+  '.kotanuki-post-container { display:block; width:100%; clear:both; box-sizing: border-box !important; }'+
+  '.kotanuki-post-container * { box-sizing: border-box !important; }'+
+  '.kotanuki-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px;margin-top:18px;justify-items:center;}'+
+  '.ig-card{container-type:inline-size;width:100%;max-width:320px;aspect-ratio:1/1;border-radius:8px;background-color:var(--card-bg);background-image:'+getSvgUrl(theme.svg, theme.primary)+';background-size:'+theme.size+';background-position:center;background-repeat:repeat;border:8px solid #f7f2e6;box-shadow:2px 4px 12px var(--shadow-color);display:flex;flex-direction:column;overflow:hidden;position:relative;margin:0 auto}'+
+  '.card-header{padding:4cqi 5cqi 0 5cqi;display:flex;align-items:center;flex-shrink:0;z-index:2;gap:3cqi}'+
+  '.header-badge{background:var(--primary);color:#fff;font-weight:900;font-size:5cqi;width:9cqi;height:9cqi;border-radius:4px;display:flex;align-items:center;justify-content:center;border:2px solid #fff;box-shadow:0 2px 4px rgba(0,0,0,0.15);flex-shrink:0;font-family:"Noto Sans TC",sans-serif;}'+
+  '.header-title{font-size:4.5cqi;font-weight:900;color:var(--primary);background:#fff;padding:1.5cqi 3.5cqi;border-radius:4px;box-shadow:0 1px 3px rgba(0,0,0,0.08);white-space:nowrap;letter-spacing:0.05em;}'+
+  '.card-body{flex-grow:1;display:flex;flex-direction:column;justify-content:center;padding:1cqi 5cqi 10cqi 5cqi;z-index:2;position:relative}'+
+  '.text-bg{background:var(--inner-bg);padding:5cqi 5cqi;border-radius:2px;border:1px solid var(--paper-border);outline:4px solid rgba(255,255,255,0.6);position:relative;text-align:center;width:96%;max-width:100%;margin:0 auto;display:flex;flex-direction:column;align-items:center;box-sizing:border-box !important; word-break:normal !important; line-break:strict !important; overflow-wrap:break-word !important;}'+
+  '.fa-icon{font-size:8cqi;display:block;margin:0 auto 2cqi auto;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.1));opacity:0.9;}'+
+  '.text-primary{color:var(--primary)} .text-accent{color:var(--accent)}'+
+  '.main-text{font-size:7.8cqi;font-weight:900;color:var(--text);line-height:1.45;margin-bottom:2cqi;letter-spacing:0.02em;text-shadow:1px 1px 0 #fff; word-break:normal !important; line-break:strict !important; overflow-wrap:break-word !important;}'+
+  '.note-box{margin-top:3cqi;line-height:1.5;color:#594d3c;font-weight:700;text-align:justify;font-size:4.8cqi;padding:0 2cqi;position:relative;z-index:2;}'+
+  'ruby{font-family:\'Zen Maru Gothic\',sans-serif;display:inline-flex;flex-direction:column-reverse;align-items:center;vertical-align:bottom}'+
+  'rt{font-size:0.55em;color:var(--primary);font-weight:700;line-height:1;margin-bottom:-2px;transform:none!important;letter-spacing:0;}'+
+  '.cover-body{align-items:center;text-align:center;padding-top:6cqi;padding-bottom:12cqi}'+
+  '.cover-title{font-size:11.5cqi;color:var(--primary);font-weight:900;margin-bottom:3cqi;letter-spacing:0.02em;text-shadow:2px 2px 0 #fff, -1px -1px 0 rgba(0,0,0,0.05);line-height:1.25;margin-top:2cqi; word-break:normal !important; line-break:strict !important; overflow-wrap:break-word !important;}'+
+  '.tag-pill{display:inline-block;background:var(--accent);color:white;padding:1.5cqi 5cqi;border-radius:2px;font-size:4.5cqi;font-weight:700;margin-top:3cqi;margin-bottom:4cqi;box-shadow:1px 2px 4px rgba(0,0,0,0.15);letter-spacing:0.05em;position:relative;}'+
+  '.cover-desc{font-size:5.5cqi;color:var(--text);font-weight:700;line-height:1.6;background:var(--inner-bg);padding:4.5cqi;border-radius:2px;border:1px solid var(--paper-border);outline:4px solid rgba(255,255,255,0.6);width:96%;margin:0 auto;text-align:justify;box-sizing:border-box !important;}'+
+  '.logo-footer{position:absolute;left:0;right:0;bottom:3cqi;z-index:10;display:flex;justify-content:center;pointer-events:none;}'+
+  
+  '.ktnk-section{display:block;width:100%;margin-bottom:25px;background:#fff;padding:20px;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.05);border:1px solid #f0eadd;clear:both;overflow:hidden;}'+
+  '.ktnk-h3{font-size:18px;font-weight:900;color:var(--primary);margin:0 0 12px 0;padding-bottom:8px;border-bottom:2px solid var(--accent);display:flex;align-items:center;clear:both;float:none !important;width:100%;}'+
+  '.ktnk-h3::before{content:"";display:inline-block;width:6px;height:18px;background:var(--accent);margin-right:8px;border-radius:2px;}'+
+  /* 🌟 官網內容強制加粗 (font-weight:700) */
+  '.ktnk-text{line-height:1.9;margin:0 0 14px;font-size:16px;color:#4a4238;display:block;clear:both; font-weight:700; word-break:normal !important; line-break:strict !important; overflow-wrap:break-word !important;}'+
+  '.ktnk-h1{color:var(--primary);border-bottom:3px solid #fde047;display:inline-block;margin:10px 0 20px;font-size:26px;padding-bottom:6px;font-weight:900;letter-spacing:0.05em;clear:both;float:none !important;}'+
+  
+  '.promo-section { background: linear-gradient(135deg, #fffcf7, #fff8e7); border: 2px dashed #eaddc5; }'+
+  '.promo-list{padding-left:20px;margin:0;}'+
+  '.promo-list li{margin-bottom:12px;font-size:15px;color:#4a4238;line-height:1.7;}'+
+  '.promo-list a{color:var(--primary);text-decoration:none;font-weight:700;border-bottom:1px dashed var(--primary);transition:all 0.2s;}'+
+  '.promo-list a:hover{color:var(--accent);border-bottom-color:var(--accent);}';
+}
+
+function generateCardsHTML(d){
+  var cards=d.cards||[];
+  var word = d.base.word || "關鍵字";
+  var meaning = d.base.meaning || "意思";
+  var type = d.base.type || "日語學習";
+  
+  var c0 = cards[0] || {title: type, main: word, note: meaning, noteX:0, noteY:0};
+  var c1 = cards[1] || {title:"標題", main:"內容", note:"說明", noteX:0, noteY:0};
+  var c2 = cards[2] || {title:"標題", main:"內容", note:"說明", noteX:0, noteY:0};
+  var c3 = cards[3] || {title:"標題", main:"內容", note:"說明", noteX:0, noteY:0};
+  
+  var dayNum = d.base.day || 1;
+
+  // 🌟 使用 cleanNote 移除 IG 圖卡中的括號
+  return '<div class="ig-card" id="card-0"><div class="card-header"><div class="header-badge">01</div><div class="header-title">這個字，小狸日語教你用</div></div><div class="card-body cover-body"><span class="tag-pill">' + escapeHtml(c0.title||type) + '</span><div class="cover-title">' + convertToRuby(c0.main||word) + '</div><div class="cover-desc" style="transform:translate('+(c0.noteX||0)+'px, '+(c0.noteY||0)+'px);">' + escapeHtml(cleanNote(c0.note||meaning)) + '</div></div><div class="logo-footer">' + LOGO_HTML + '</div></div>' +
+  '<div class="ig-card" id="card-1"><div class="card-header"><div class="header-badge">02</div><div class="header-title">' + escapeHtml(c1.title||'') + '</div></div><div class="card-body"><div class="text-bg"><i class="fa-solid ' + getRandomFaIcon(dayNum, 1) + ' fa-icon text-primary"></i><div class="main-text">' + convertToRuby(c1.main||'') + '</div><div class="note-box" style="transform:translate('+(c1.noteX||0)+'px, '+(c1.noteY||0)+'px);">' + nl2br(cleanNote(c1.note)) + '</div></div></div><div class="logo-footer">' + LOGO_HTML + '</div></div>' +
+  '<div class="ig-card" id="card-2"><div class="card-header"><div class="header-badge">03</div><div class="header-title">' + escapeHtml(c2.title||'') + '</div></div><div class="card-body"><div class="text-bg"><i class="fa-solid ' + getRandomFaIcon(dayNum, 2) + ' fa-icon text-accent"></i><div class="main-text">' + convertToRuby(c2.main||'') + '</div><div class="note-box" style="transform:translate('+(c2.noteX||0)+'px, '+(c2.noteY||0)+'px);">' + nl2br(cleanNote(c2.note)) + '</div></div></div><div class="logo-footer">' + LOGO_HTML + '</div></div>'+
+  '<div class="ig-card" id="card-3"><div class="card-header"><div class="header-badge">04</div><div class="header-title">' + escapeHtml(c3.title||'') + '</div></div><div class="card-body"><div class="text-bg"><i class="fa-solid ' + getRandomFaIcon(dayNum, 3) + ' fa-icon text-primary"></i><div class="main-text">' + convertToRuby(c3.main||'') + '</div><div class="note-box" style="transform:translate('+(c3.noteX||0)+'px, '+(c3.noteY||0)+'px);">' + nl2br(cleanNote(c3.note)) + '</div></div></div><div class="logo-footer">' + LOGO_HTML + '</div></div>';
+}
+
+function generateContentHTML(d,theme,mode){
+  var cardsHtml=generateCardsHTML(d);
+  if(mode==="ig")return'<div class="kotanuki-grid">'+cardsHtml+'</div>';
+  
+  var promoHTML = '<div class="ktnk-section promo-section"><h3 class="ktnk-h3">📚 小狸老師作品集</h3><ul class="promo-list">'+
+    '<li><a href="https://bitl.to/5blV" target="_blank">小狸日語 新日檢N3聽力高分合格攻略：從句型到實戰，打造日檢「秒懂」日語耳。一聽就懂，才是N3聽力的真實力！</a></li>'+
+    '<li><a href="https://bitl.to/5blW" target="_blank">小狸日語【觀念文法書】暢銷新版：最大量的句型彙整、文法辨析練習、音檔強化記憶，帶你從N5、N4到N3，直擊文法核心概念</a></li>'+
+    '<li><a href="https://bityl.co/R3r2" target="_blank">日語50音完全自學手冊（修訂版）</a></li>'+
+    '<li><a href="https://bityl.co/QW41" target="_blank">小狸日語沉浸式口說訓練課：輕鬆自學開口說流暢日文</a></li>'+
+    '</ul></div>';
+
+  // 🌟 使用 cleanSEOText 徹底清除官網的箭頭廢話與括號
+  return'<div class="kotanuki-post-container">'+
+    '<h1 class="ktnk-h1">'+(d.seo&&d.seo.title?d.seo.title:"標題")+'</h1>'+
+    '<div class="ktnk-section"><div class="ktnk-text">'+nl2br(convertToRuby(d.seo&&d.seo.intro?d.seo.intro:""))+'</div></div>'+
+    '<div class="ktnk-section"><h3 class="ktnk-h3">📖 意思與情境</h3><div class="ktnk-text">'+nl2br(convertToRuby(d.seo&&d.seo.meaning?d.seo.meaning:""))+'</div></div>'+
+    '<div class="ktnk-section"><h3 class="ktnk-h3">✏️ 實用例句</h3><div class="ktnk-text">'+cleanSEOText(d.seo&&d.seo.examples?d.seo.examples:"")+'</div></div>'+
+    (d.seo&&d.seo.related?'<div class="ktnk-section"><h3 class="ktnk-h3">🔗 延伸學習</h3><div class="ktnk-text">'+nl2br(convertToRuby(d.seo.related))+'</div></div>':'')+
+    promoHTML+
+    '<div class="kotanuki-grid">'+cardsHtml+'</div></div>';
+}
+
+function copyDayJson(){var d=appData[currentDay];var clean=(d.cards||[]).map(function(c){return{title:c.title||"",main:c.main||"",note:c.note||""};});navigator.clipboard.writeText(JSON.stringify(clean,null,2));showToast("📋 JSON 已複製");}
+function exportData(){var blob=new Blob([JSON.stringify(appData,null,2)],{type:"application/json"});var a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="backup_"+new Date().toISOString().slice(0,10)+".json";a.click();}
+
+function copyWebHTMLFromPreview(){
+  if(previewMode!=="web")return;
+  var d=appData[currentDay],theme=THEMES[d.base.themeIdx||0];
+  var cleanHTML='<div class="kotanuki-post-container">\n<style>\n'+generateCardCSS(theme)+'\n</style>\n\n'+generateContentHTML(d,theme,"web")+'\n</div>';
+  navigator.clipboard.writeText(cleanHTML);
+  showToast("📋 已複製文章+IG卡片 HTML");
+}
+function dlCover(){var area=document.getElementById("coverPreviewArea");if(!area)return;html2canvas(area,{scale:2}).then(function(c){var a=document.createElement("a");a.download="Cover_"+(document.getElementById("fWord").value||"keyword")+".jpg";a.href=c.toDataURL("image/jpeg",0.92);a.click();});}
+function hardReset(){if(confirm("確定要強制重置所有資料嗎？")){localStorage.removeItem(STORAGE_KEY);location.reload();}}
+function importSchedule(){var raw=document.getElementById("jsonInput").value.trim();if(!raw)return alert("請輸入內容");try{var cleanRaw=raw.replace(/```json/gi,"").replace(/```/g,"").trim();var parsed=JSON.parse(cleanRaw);var items=Array.isArray(parsed)?parsed:(parsed.schedule||[]);if(items.length<=0)return alert("⚠️ 無法識別格式");var count=0;items.forEach(function(it){var day=Number(it.day),word=it.word||it.word_kanji||it.topic||it.item||"";if(!day||day<1||day>TOTAL_DAYS)return;if(!appData[day])appData[day]={base:{day:day,word:"",meaning:"",type:"慣用句",themeIdx:0,tapeIdx:0},seo:{},cards:[]};if(!appData[day].base)appData[day].base={day:day,word:"",meaning:"",type:"慣用句",themeIdx:0,tapeIdx:0};appData[day].base.word=word;appData[day].base.meaning=it.meaning||it.explanation||"";appData[day].base.type=it.type||it.category||it.level||"慣用句";count++;});localStorage.setItem(STORAGE_KEY,JSON.stringify(appData));alert("✅ 成功導入 "+count+" 天課表！");location.reload();}catch(e){alert("JSON 錯誤: "+e.message);}}
+
+// 🌟 嚴格規範的 V57 Prompt 指令
+function copySingleDayPrompt(){var d=appData[currentDay];var prompt=buildSingleDayPrompt(d.base.word||"{{關鍵字}}",d.base.meaning||"",d.base.type||"慣用句",currentDay);navigator.clipboard.writeText(prompt);showToast("📋 本日 Prompt 已複製");}
+function copyBatchPrompt(){var daysList=[];for(var i=1;i<=TOTAL_DAYS;i++){var d=appData[i];if(d.base.word)daysList.push({day:i,word:d.base.word,meaning:d.base.meaning||"",type:d.base.type||"慣用句"});}if(daysList.length===0){alert("請先填入課表");return;}var prompt=buildBatchPrompt(daysList);navigator.clipboard.writeText(prompt);showToast("📋 已複製 "+daysList.length+" 天的批次 Prompt");}
+
+function buildSingleDayPrompt(word,meaning,type,day){
+    return "你是日語教學編輯。請為以下日語關鍵字生成教學內容：\n\n關鍵字："+word+"\n意思提示："+(meaning||"無")+"\n類型："+type+"\nDay: "+day+"\n\n⚠️【極重要】輸出規則：\n1. 只輸出純 JSON 物件，不要 ```json\n2. 直接以 { 開頭，以 } 結尾\n\n【用字遣詞嚴格規範】\n- 一律使用「這個字」，絕對不可使用「這個詞」。\n- 一律使用「情境」，絕對不可使用「語境」。\n- 一律使用「唸法」，絕對不可使用「念法」。\n- 廢話不用說！解說請極度精鍊，不要寫長篇大論的開場白或結尾。\n- 例句後方絕對不要加上「-> 說明...」或任何以箭頭開頭的解釋廢話。\n\n【Ruby 標註格式】\n漢字加假名：漢字(假名) 例如：一石二鳥(いっせきにちょう)。請僅就「漢字部分」標註假名。\n\n【SEO欄位規則(官網內容)】\n內容請濃縮精簡：intro(前言)約50字，meaning(意思與情境)約80字，related(補充/文化背景)約80字。examples請提供「2個」實用例句，格式：日文(含假名)。繁體中文翻譯（⚠️翻譯前後絕對不要加括號）。\n\n【note 欄位規則(圖卡)】\n每個 note 極度簡潔，50字以內。若是中文翻譯，絕對不要加上括號（）。\n\n【10張卡片結構】\n1. 封面：關鍵字 + 中文意思\n2. 文法/常用表達：相關文法或常用搭配\n3. 例句1：完整日文例句 + 中文翻譯 (無括號)\n4. 例句2：完整日文例句 + 中文翻譯 (無括號)\n5. 例句3：完整日文例句 + 中文翻譯 (無括號)\n6. 情境：使用場合說明\n7. 注意：常見錯誤或注意事項\n8. 類似字：提供兩組相關詞彙（用「、」分開）\n9. 文化：背景知識補充\n10. 今日重點：總結或記憶口訣\n\n現在請直接輸出 JSON：";
+}
+
+function buildBatchPrompt(daysList){
+    var listStr=daysList.map(function(d){return"Day "+d.day+": "+d.word+"（"+(d.meaning||"無提示")+"）["+d.type+"]";}).join("\n");
+    return "你是日語教學編輯。請為以下 "+daysList.length+" 天的日語關鍵字生成教學內容。\n\n"+listStr+"\n\n⚠️【極重要】輸出規則：\n1. 只輸出純 JSON 陣列，不要 ```json\n2. 直接以 [ 開頭，以 ] 結尾\n\n【用字遣詞嚴格規範】\n- 一律使用「這個字」，絕對不可使用「這個詞」。\n- 一律使用「情境」，絕對不可使用「語境」。\n- 一律使用「唸法」，絕對不可使用「念法」。\n- 廢話不用說！解說請極度精鍊，不要寫長篇大論的開場白或結尾。\n- 例句後方絕對不要加上「-> 說明...」或任何以箭頭開頭的解釋廢話。\n\n【Ruby 標註格式】\n漢字加假名：漢字(假名) 例如：一石二鳥(いっせきにちょう)。請僅就「漢字部分」標註假名。\n\n【SEO欄位規則(官網內容)】\n內容請濃縮精簡：intro(前言)約50字，meaning(意思與情境)約80字，related(補充/文化背景)約80字。examples請提供「2個」實用例句，格式：日文(含假名)。繁體中文翻譯（⚠️翻譯前後絕對不要加括號）。\n\n【note 欄位規則(圖卡)】\n每個 note 極度簡潔，50字以內。若是中文翻譯，絕對不要加上括號（）。\n\n【10張卡片結構】\n1. 封面：關鍵字 + 中文意思\n2. 文法/常用表達：相關文法或常用搭配（不要讀音頁）\n3. 例句1：完整日文例句 + 中文翻譯 (無括號)\n4. 例句2：完整日文例句 + 中文翻譯 (無括號)\n5. 例句3：完整日文例句 + 中文翻譯 (無括號)\n6. 情境：使用場合說明\n7. 注意：常見錯誤或注意事項\n8. 類似字：提供兩組相關詞彙（用「、」分開）\n9. 文化：背景知識補充\n10. 今日重點：總結或記憶口訣\n\n現在請直接輸出 JSON（以 [ 開頭）：";
+}
+
+function openImportModal(){document.getElementById("importModal").classList.add("show");document.getElementById("importJsonArea").value="";}
+function closeImportModal(){document.getElementById("importModal").classList.remove("show");}
+function doImport(){var mode=document.getElementById("importMode").value;var raw=document.getElementById("importJsonArea").value.trim();if(!raw){alert("請貼上 JSON 內容");return;}try{var cleanRaw=raw.replace(/```json/gi,"").replace(/```/g,"").trim();var jsonStartArr=cleanRaw.indexOf("["),jsonStartObj=cleanRaw.indexOf("{");var jsonStart=-1;if(jsonStartArr>=0&&jsonStartObj>=0)jsonStart=Math.min(jsonStartArr,jsonStartObj);else if(jsonStartArr>=0)jsonStart=jsonStartArr;else if(jsonStartObj>=0)jsonStart=jsonStartObj;if(jsonStart>0)cleanRaw=cleanRaw.substring(jsonStart);var parsed=JSON.parse(cleanRaw);if(mode==="single")importSingleDay(parsed);else importBatchDays(parsed);closeImportModal();}catch(e){alert("JSON 解析錯誤: "+e.message);}}
+function importSingleDay(data){if(Array.isArray(data))appData[currentDay].cards=normalizeCards(data);else if(data.cards){if(data.seo)appData[currentDay].seo=data.seo;appData[currentDay].cards=normalizeCards(data.cards);}else{alert("無法識別格式");return;}if(!appData[currentDay].base.themeIdx){appData[currentDay].base.themeIdx=Math.floor(Math.random()*THEMES.length);}saveAppData();loadDay(currentDay);renderScroller();showToast("✅ Day "+currentDay+" 導入成功！");}
+function importBatchDays(data){var items=Array.isArray(data)?data:(data.days||data.data||data.schedule||data.content||[data]);if(items.length===0){alert("⚠️ 無法識別 JSON 格式");return;}var count=0;items.forEach(function(item,index){var day=Number(item.day||item.Day||(index+1));if(!day||day<1||day>TOTAL_DAYS)return;if(!appData[day])appData[day]={base:{day:day,word:"",meaning:"",type:"慣用句",themeIdx:0,tapeIdx:0},seo:{},cards:[]};if(!appData[day].base)appData[day].base={day:day,word:"",meaning:"",type:"慣用句",themeIdx:0,tapeIdx:0};if(item.word||item.keyword)appData[day].base.word=item.word||item.keyword;if(item.meaning)appData[day].base.meaning=item.meaning;if(item.type)appData[day].base.type=item.type;if(!appData[day].base.word&&item.cards&&item.cards[0])appData[day].base.word=item.cards[0].main||item.cards[0].note||"";if(item.seo)appData[day].seo=item.seo;if(item.cards)appData[day].cards=normalizeCards(item.cards);if(!appData[day].base.themeIdx){appData[day].base.themeIdx=Math.floor(Math.random()*THEMES.length);}count++;});localStorage.setItem(STORAGE_KEY,JSON.stringify(appData));alert("✅ 成功導入 "+count+" 天的內容！");location.reload();}
+function normalizeCards(cards){return cards.slice(0,10).map(function(c,i){return{title:c.title||"",main:convertToRuby(c.main||""),note:c.note||""};});}
+function convertToRuby(text){if(!text)return"";return text.replace(/([一-龯々ヶ]+)[（(]([ぁ-んァ-ヶー]+)[）)]/g,"<ruby>$1<rt>$2</rt></ruby>");}
+function escapeHtml(s){return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+function escapeAttr(s){return String(s||"").replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+
+function triggerIgDownload() {
+    if(previewMode !== "ig") {
+        setPreviewMode("ig");
+        showToast("切換至IG模式，準備下載...");
+        setTimeout(function(){
+            var win = document.getElementById("previewFrame").contentWindow;
+            if(win && win.dlCards) win.dlCards().then(function(){ showToast("📥 四張圖卡下載完畢"); });
+        }, 800);
+        return;
+    }
+    var win = document.getElementById("previewFrame").contentWindow;
+    if(win && win.dlCards) {
+        win.dlCards().then(function(){ showToast("📥 四張圖卡下載完畢"); });
+    } else {
+        alert("載入中，請稍候");
+    }
+}
+</script>
+</body>
+</html>
